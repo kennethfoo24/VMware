@@ -1,0 +1,34 @@
+formatVersion: 1
+inputs: {}
+resources:
+  Cloud_Ansible_1:
+    type: Cloud.Ansible
+    properties:
+      authentication: usernamePassword
+      inventoryFile: /etc/ansible/hosts
+      username: vmuser
+      password: VMware1!
+      playbooks:
+        provision:
+          - /etc/ansible/apache.yml
+      osType: linux
+      groups:
+        - webservers
+      maxConnectionRetries: 20
+      account: SA-Ansible
+      host: '${resource.Cloud_vSphere_Machine_1.*}'
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    properties:
+      image: VMW-CentOS
+      flavor: VMW-Small
+      customizationSpec: Lin-Cust
+      networks:
+        - network: '${resource.Cloud_vSphere_Network_1.id}'
+          assignment: static
+  Cloud_vSphere_Network_1:
+    type: Cloud.vSphere.Network
+    properties:
+      networkType: existing
+      name: VMW-Production
+      networkCidr: 172.20.11.0/24

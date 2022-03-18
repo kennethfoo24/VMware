@@ -1,0 +1,12 @@
+apiVersion:
+kind:
+metadata:
+  name:
+  namespace: 
+  labels:
+    run:
+spec:
+  ports:
+  - port:
+  selector:
+    run:

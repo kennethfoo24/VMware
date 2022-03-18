@@ -1,0 +1,18 @@
+          - echo "VRA - Setting static IP" >> root/log.txt
+          - echo "VRA - Setting static IP" 
+          - mkdir -p /root/myconfig
+          - cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.sav
+          - chmod 777 /etc/netplan/50-cloud-init.yaml
+          - touch /root/myconfig/50-cloud-init.yaml
+          - echo "network:"" " >> /root/myconfig/50-cloud-init.yaml
+          - echo "  version:"" 2" >> /root/myconfig/50-cloud-init.yaml
+          - echo "  ethernets:"" " >> /root/myconfig/50-cloud-init.yaml
+          - echo "    ens160:"" " >> /root/myconfig/50-cloud-init.yaml
+          - echo "      dhcp4:"" false " >> /root/myconfig/50-cloud-init.yaml
+          - echo "      addresses:"" [${input.ipaddress1}/24]" >> /root/myconfig/50-cloud-init.yaml
+          - echo "      gateway4:"" 172.20.11.10" >> /root/myconfig/50-cloud-init.yaml
+          - echo "      nameservers:"" ">> /root/myconfig/50-cloud-init.yaml
+          - echo "        addresses:"" [172.20.11.10]" >> /root/myconfig/50-cloud-init.yaml
+          - cp /root/myconfig/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml
+          - chmod 644 /etc/netplan/50-cloud-init.yaml
+          - netplan apply

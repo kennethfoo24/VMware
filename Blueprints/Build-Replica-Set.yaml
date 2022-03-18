@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${input.Name}
+  namespace: ${input.Namespace}
+spec:
+  selector:
+    matchLabels:
+      run: Apache
+  replicas: ${input.NumberReplicas}
+  template: 
+    metadata:
+      namespace: ${input.Namespace}
+      labels:
+        run: Apache
+    spec:
+      containers:
+      - name: ${input.Name}
+        image: k8s.gcr.io/hpa-example
+        ports: 
+        - containerPort: 80

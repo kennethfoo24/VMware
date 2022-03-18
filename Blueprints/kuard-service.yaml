@@ -1,0 +1,12 @@
+apiVersion: v1  #this section is a joint file designed to create a external port to communicate.
+kind: Service
+metadata:
+  name: kuard
+  namespace: lab-demo
+  labels:
+    run: kuard
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: kuard

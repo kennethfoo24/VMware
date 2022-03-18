@@ -1,0 +1,10 @@
+var allVms = VcPlugin.getAllVirtualMachines();
+
+for (var i in allVms) {
+    if (allVms[i].name === name) {
+        System.log("VM located");
+        return allVms[i];
+    }
+}
+System.log("VM not found");
+return null;

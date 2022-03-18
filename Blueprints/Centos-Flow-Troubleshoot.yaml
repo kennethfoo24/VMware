@@ -1,0 +1,31 @@
+formatVersion: 1
+inputs:
+  hostname1:
+    type: string
+    title: Enter your hostname
+    default: Centos-ABX
+    description: This will be the hostname of the machine
+  UserTags:
+    type: object
+    title: Enter your user tags
+  tagInput:
+    type: string
+    enum:
+      - TagVM
+      - NoTag
+    title: Tag VM?
+resources:
+  ABX-VM:
+    type: Cloud.vSphere.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      tagControl: '${input.tagInput}'
+      image: VMW-CentOS
+      flavor: VMW-Small
+      customizationSpec: Lin-Cust
+      newHostName: '${input.hostname1}'
+      yamlTags: '${input.UserTags}'
+      networks: []

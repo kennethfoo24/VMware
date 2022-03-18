@@ -1,0 +1,16 @@
+
+apiVersion: 
+kind: 
+metadata:
+  name: 
+  namespace: 
+  labels:
+    app: 
+spec:
+  containers:
+    - image: 
+      name: 
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP

@@ -1,0 +1,12 @@
+apiVersion:
+kind:
+metadata:
+  name:
+  namespace:
+spec:
+  selector:
+    app: 
+  ports:
+    - port: 
+      targetPort:
+  type:

@@ -1,0 +1,27 @@
+formatVersion: 1
+inputs:
+  Hostname:
+    type: string
+resources:
+  Cloud_Volume_1:
+    type: Cloud.Volume
+      name: $[input.Hostname]
+    properties:
+      capacityGb: 5
+      persistent: true
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    properties:
+      name: '${inputs.hostname}'
+      image: VMW-CentOS
+      flavor: vmw-small
+      networks:
+        - network: '${resource.Cloud_NSX_Network_1.id}'
+      attachedDisks:
+        - source: '${resource.Cloud_Volume_1.id}'
+  SA-Management:
+    type: Cloud.NSX.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: 'net-production'
