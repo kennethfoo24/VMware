@@ -1,0 +1,33 @@
+formatVersion: 1
+inputs:
+  SelectZone:
+    type: string
+    enum:
+      - Zone1
+      - Zone2
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      constraints:
+        - tag: '${input.SelectZone}'
+      image: VMW-Centos-Two-Zone
+      flavor: VMW-Small
+      customizationSpec: '${input.SelectZone == "Zone1" ? "Lin-Cust" : "Lin-Cust-B"}'
+      networks:
+        - network: '${resource.Cloud_Network_1.id}'
+          assignment: static
+  Cloud_Network_1:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 1
+        - 0
+    properties:
+      networkType: existing
+      name: '${input.SelectZone == "Zone1" ? "VMW-Production" : "VMW-Production-B"}'
+      networkCidr: 172.20.11.0/24

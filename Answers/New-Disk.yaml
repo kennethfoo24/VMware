@@ -1,0 +1,57 @@
+formatVersion: 1
+inputs:
+  hostname1:
+    type: string
+    title: Enter your hostname
+    description: This will be the internal DNS hostname of the machine.
+resources:
+  Cloud_Volume_1:
+    type: Cloud.Volume
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      capacityGb: 4
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 1
+        - 1
+    properties:
+      image: VMW-Ubuntu-Cloud
+      flavor: VMW-Small
+      cloudConfig: |
+        disk_setup:
+          /dev/sda:
+            table_type: 'mbr'
+            overwrite: false
+          /dev/sdb:
+            table_type: 'mbr'
+            layout: 'auto'
+            overwrite: true
+        fs_setup:
+          - label: data-disk
+            filesystem: 'ext4'
+            device: /dev/sdb
+            overwrite: true
+        runcmd:
+          - hostnamectl set-hostname ${input.hostname1}
+          - mkdir /datadisk
+        mounts:
+          - ["/dev/sdb", "/datadisk"]
+      networks:
+        - network: '${resource.Cloud_Network_1.id}'
+          assignment: dynamic
+      attachedDisks:
+        - source: '${resource.Cloud_Volume_1.id}'
+  Cloud_Network_1:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 2
+        - 0
+    properties:
+      networkType: existing
+      name: VMW-Production

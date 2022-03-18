@@ -1,0 +1,69 @@
+formatVersion: 1
+inputs:
+  NumDisks:
+    title: 'Enter number of data disks [0-3]'
+    type: integer
+    pattern: '[0-3]'
+resources:
+  Cloud_vSphere_Disk_1:
+    type: Cloud.vSphere.Disk
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      storagePolicy: VMW-Storage-Silver-Tier
+      capacityGb: 1
+      count: '${input.NumDisks}'
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 1
+    properties:
+      storage:
+        constraints:
+          - tag: '${input.NumDisks != 1  ? "Silver" : "Gold"}'
+      image: VMW-Ubuntu-Cloud
+      flavor: VMW-Small
+      cloudConfig: |
+        disk_setup:
+          /dev/sda:
+            table_type: 'mbr'
+            overwrite: false
+          /dev/sdb:
+            table_type: 'mbr'
+            layout: 'auto'
+            overwrite: true
+          /dev/sdc:
+            table_type: 'mbr'
+            layout: 'auto'
+            overwrite: true
+          /dev/sdd:
+            table_type: 'mbr'
+            layout: 'auto'
+            overwrite: true
+        fs_setup:
+          - label: data-disk
+            filesystem: 'ext4'
+            device: /dev/sdb
+            overwrite: true
+          - label: data-disk
+            filesystem: 'ext4'
+            device: /dev/sdc
+            overwrite: true
+          - label: data-disk
+            filesystem: 'ext4'
+            device: /dev/sdd
+            overwrite: true
+        runcmd:
+          - mkdir /datadisk
+          - mkdir /datadisk2
+          - mkdir /datadisk3
+        mounts:
+          - ["/dev/sdb", "/datadisk"]
+          - ["/dev/sdc", "/datadisk2"]
+          - ["/dev/sdd", "/datadisk3"]
+      networks: []
+      attachedDisks: '${map_to_object(resource.Cloud_vSphere_Disk_1[*].id, "source")}'

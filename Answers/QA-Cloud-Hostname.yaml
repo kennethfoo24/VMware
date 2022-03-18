@@ -1,0 +1,19 @@
+formatVersion: 1
+inputs:
+  hostname1:
+    type: string
+    title: Enter your hostname
+    description: This will be the internal DNS hostname of the machine.
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      image: VMW-Ubuntu-Cloud
+      flavor: VMW-Small
+      cloudConfig: |
+        runcmd:
+        - hostnamectl set-hostname ${input.hostname1}

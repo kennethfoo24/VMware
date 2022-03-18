@@ -1,0 +1,51 @@
+---
+project: VMW-ENG
+kind: PIPELINE
+name: VMW-kuard
+enabled: true
+concurrency: 10
+workspace:
+  endpoint: ''
+  image: ''
+  registry: ''
+  path: ''
+  limits:
+    cpu: 1.0
+    memory: 512
+stageOrder:
+- Kuard deployment
+stages:
+  Kuard deployment:
+    taskOrder:
+    - Deploy Kuard
+    - Expose 8080
+    tasks:
+      Deploy Kuard:
+        type: K8S
+        endpoints:
+          kubernetesServer: changeMe
+        input:
+          action: GET
+          timeout: 5
+          filterByLabel: ''
+          filePath: ''
+          scmConstants: {
+            }
+          yaml: "\r\napiVersion: v1\r\nkind: Pod\r\nmetadata:\r\n  name: kuard\r\n  namespace: lab-demo\r\
+            \n  labels:\r\n    app: kuard\r\nspec:\r\n  containers:\r\n    - image: gcr.io/kuar-demo/kuard-amd64:1\r\
+            \n      name: kuard\r\n      ports:\r\n        - containerPort: 8080\r\n          name: http\r\
+            \n          protocol: TCP\r\n"
+      Expose 8080:
+        type: K8S
+        endpoints:
+          kubernetesServer: changeMe
+        input:
+          action: CREATE
+          timeout: 5
+          continueOnConflict: false
+          filePath: ''
+          scmConstants: {
+            }
+          yaml: "apiVersion: v1\r\nkind: Service\r\nmetadata:\r\n  name: frontend\r\n  namespace: lab-demo\r\
+            \n  labels:\r\n    app: kuard\r\nspec:\r\n  ports:\r\n  - port: 8080\r\n  selector:\r\n  \
+            \  app: kuard\r\n"

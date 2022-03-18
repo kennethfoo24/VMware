@@ -1,0 +1,52 @@
+formatVersion: 1
+inputs:
+  hostname1:
+    type: string
+    title: Enter your hostname
+    description: This will be the internal DNS hostname of the machine.
+  powerstate:
+    type: string
+    title: Select power state after deplyment
+    description: This will either leave the machine powered on or off.
+    enum:
+      - REBOOT
+      - POWEROFF
+      - HALT
+  delayvalue:
+    type: string
+    title: Enter delay in minutes (2-digit))
+    description: This will give you a delay.
+    pattern: '[0-9][0-9]'
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      image: VMW-Centos-Cloud
+      flavor: VMW-Small
+      cloudConfig: |
+        runcmd:
+          - hostnamectl set-hostname ${input.hostname1}
+        power_state:
+          delay: +${input.delayvalue}
+          mode: '${to_lower(input.powerstate)}'
+          message: '${input.powerstate == "POWEROFF" ? "Shutting down"}'
+          message: '${input.powerstate == "HALT" ? "Halting"}'
+          message: '${input.powerstate == "REBOOT" ? "Rebooting"}'
+          timeout: 30
+          condition: True
+      networks:
+        - network: '${resource.Cloud_Network_1.id}'
+          assignment: dynamic
+  Cloud_Network_1:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 1
+        - 0
+    properties:
+      networkType: existing
+      name: VMW-Production

@@ -1,0 +1,40 @@
+formatVersion: 1
+inputs: {}
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      image: VMW-Ubuntu-Cloud
+      flavor: VMW-Small
+      cloudConfig: |
+        disk_setup:
+          /dev/sda:
+            table_type: 'mbr'
+            overwrite: false
+          /dev/sdb:
+            table_type: 'mbr'
+            layout: 'auto'
+            overwrite: true
+        fs_setup:
+          - label: data-disk
+            filesystem: 'ext4'
+            device: /dev/sdb
+            overwrite: true
+        runcmd:
+          - mkdir /datadisk
+        mounts:
+          - ["/dev/sdb", "/datadisk"]
+      attachedDisks:
+        - source: '${resource.Cloud_Volume_1.id}'
+  Cloud_Volume_1:
+    type: Cloud.Volume
+    metadata:
+      layoutPosition:
+        - 1
+        - 0
+    properties:
+      capacityGb: 1
